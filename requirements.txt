@@ -1,0 +1,4 @@
+  
+flask==0.12.2
+sqlalchemy==1.2.7
+Werkzeug==0.16.1
