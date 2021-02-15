@@ -72,12 +72,12 @@ def test():
 ############################################################
 
 @application.route('/<int:levelid>/score', methods=['POST'])
-#@jwt_required
+@jwt_required
 def post_scores(levelid):
 
-    #currentUser = get_jwt_identity()
+    currentUser = get_jwt_identity()
 
-    currentUser = 100 
+    #currentUser = 100 
 
     score_data = request.get_json()
 
@@ -115,7 +115,7 @@ def post_scores(levelid):
 ############################################################
 
 @application.route('/<int:levelid>/highscorelist', methods=['GET'])
-#@jwt_required
+@jwt_required
 def get_high_scores(levelid):
     
     high_score_user = 0 
@@ -129,6 +129,15 @@ def get_high_scores(levelid):
     else:
         return {"status": "High Score is still 0"}
 
+
+
+############################################################
+#############   4.3 Get our User model    ##############
+############################################################
+@application.route('/get_user_model', methods=['GET'])
+def get_user_model():
+    return jsonify(user_model)
+    
 
 
 ##########################
@@ -152,3 +161,4 @@ def check_if_level_exists_for_user(userid, level):
         else:
             pass
     return False
+

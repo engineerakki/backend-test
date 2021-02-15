@@ -7,6 +7,7 @@ app.config['SECRET_KEY'] = 'jdasdaas2342as23qq'
 app.config['JWT_TOKEN_LOCATION'] = ['query_string']
 app.config['JWT_QUERY_STRING_NAME'] = 'sessionkey'
 
+
 jwt = JWTManager(app)
 
 import src.controllers
