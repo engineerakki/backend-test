@@ -3,8 +3,11 @@ from src import (jwt , jwt_required, JWTManager, create_access_token, get_jwt_id
 from flask import request, jsonify
 import datetime as dt
 
+###################################################
+######### User model for the problem ##############
+###################################################
 
-# My User Json:
+
 user_model = {
 	"users": [{
 			"userid": 100,
@@ -29,15 +32,20 @@ user_model = {
 	]
 }
 
+##############################################
+######### Model for High Scores ##############
+##############################################
 high_scores = {
-    "0" : 1,
-    "1" : 5,
-    "2" : 6,
-    "3" : 50
+    "0" : 0,
+    "1" : 5
 }
 
 
-# 4.1 Login and auth key
+#####################################################
+############# 4.1 Login and Auth Key ################
+#####################################################
+
+
 @application.route('/<int:currentUserId>/login/', methods=['GET'])
 def login_function(currentUserId):
 
@@ -59,8 +67,9 @@ def test():
     jwtUser = get_jwt_identity()
     return {"Authenticated via JWT": jwtUser}
 
-
-# 4.2 Post Users score to Level
+############################################################
+############# 4.2 Post Users score to Level ################
+############################################################
 
 @application.route('/<int:levelid>/score', methods=['POST'])
 #@jwt_required
@@ -82,29 +91,49 @@ def post_scores(levelid):
                     newHighScore = {str(levelid) : score_data['score']}
                     high_scores.update(newHighScore)
 
+                # Update our temporary data strucuture with new entry.
                 item.update({"userid": currentUser, "level": levelid, "score": score_data['score']})
-                
 
-        print ("*********************")
-        print (user_model['users'])
-        print (high_scores)
-            
-
-                 
+        return jsonify({"status" : "Score Updated for the user"})    
         
         # Else if User and Level does not exist,
     else:
+        # As there is no entry for this level and user, the posted score will be an highscore.
         newHighScore = {str(levelid) : score_data['score']}
         high_scores.update(newHighScore)
-        print(high_scores)
+
+        # Append the new entry in the list.
         newScore = {"userid": currentUser, "level": levelid, "score": score_data['score']}
         user_model['users'].append(newScore)
+
         return jsonify({"status" : "Created level and added Score for user"})
 
 
 
+############################################################
+#############   4.3 Retrieve High Scores      ##############
+############################################################
 
-# Common Functions
+@application.route('/<int:levelid>/highscorelist', methods=['GET'])
+#@jwt_required
+def get_high_scores(levelid):
+    
+    high_score_user = 0 
+    for item in user_model['users']:
+        print (item['score'])
+        if (item['level'] == levelid and item['score'] == high_scores.get(str(levelid))):
+            high_score_user = item['userid']
+        
+    if high_score_user:
+        return {"user": high_score_user, "score": high_scores.get(str(levelid))}
+    else:
+        return {"status": "High Score is still 0"}
+
+
+
+##########################
+#### Common Functions#####
+##########################
 
 # Function to check if user exists in our temporary user_model
 def check_if_user_exists(currentUserId):
