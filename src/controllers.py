@@ -49,23 +49,17 @@ high_scores = {
 @application.route('/<int:currentUserId>/login/', methods=['GET'])
 def login_function(currentUserId):
 
-    # If user exists, generate and issue token for the user
-    # Else , Append user to our temporary user_model and issue token.
+    # If user exists, generate and issue token for the user for 10mins
+    # Else , Append user to our temporary user_model and issue token for 10mins
     if check_if_user_exists(currentUserId):
-        access_token = create_access_token(identity=currentUserId, expires_delta=dt.timedelta(seconds=300))
+        access_token = create_access_token(identity=currentUserId, expires_delta=dt.timedelta(seconds=600))
         return jsonify({currentUserId : access_token})
     else:
         newUser = {"userid": currentUserId, "level": 0, "score": 0}
         user_model['users'].append(newUser)
-        access_token = create_access_token(identity=currentUserId, expires_delta=dt.timedelta(seconds=300))
+        access_token = create_access_token(identity=currentUserId, expires_delta=dt.timedelta(seconds=600))
         return jsonify({currentUserId : access_token})
 
-# Testing 
-@application.route('/test', methods=['GET'])
-@jwt_required
-def test():
-    jwtUser = get_jwt_identity()
-    return {"Authenticated via JWT": jwtUser}
 
 ############################################################
 ############# 4.2 Post Users score to Level ################
@@ -132,7 +126,7 @@ def get_high_scores(levelid):
 
 
 ############################################################
-#############   4.3 Get our User model    ##############
+#############   4.4 Get our User model    ##############
 ############################################################
 @application.route('/get_user_model', methods=['GET'])
 def get_user_model():
