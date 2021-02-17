@@ -45,7 +45,7 @@ docker run -itd -p 8080:8080 backend-test:latest
 
 # 2.1 Login / Auth
 
-## Get a key valid for 5 mins API:
+## Get a key valid for 10 mins API:
 Perform an GET call on following endpoint:
 ```
 http://localhost:8080/<userid>/login
